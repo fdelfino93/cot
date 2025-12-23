@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip install:*)",
+      "Bash(playwright install:*)",
+      "Bash(python cot_scraper.py:*)",
+      "Bash(python cot_extractor.py:*)",
+      "Bash(python cot_full_extractor.py:*)",
+      "Bash(python atualizar_cot.py:*)",
+      "Bash(python:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
