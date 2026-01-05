@@ -61,9 +61,9 @@
 | **Percentil** | **93%** | **84%** |
 | Minimo | -57,523 | -40,335 |
 | Maximo | 78,334 | 31,550 |
-| Media | 11,677 | -1,326 |
-| P90 | 57,328 | 12,142 |
-| P95 | 63,276 | 14,679 |
+| Media | 11,903 | -1,272 |
+| P90 | 57,262 | 12,135 |
+| P95 | 63,263 | 14,663 |
 
 ### 🟡 ALERTA: Posicao no TOP 7% historico
 - Em apenas **7%** das semanas desde 2020, a posicao foi MAIOR que agora
