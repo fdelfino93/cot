@@ -286,60 +286,125 @@ with tab1:
 
 # ===== TAB 2: EVENTOS ECONOMICOS =====
 with tab2:
-    st.header("📰 Registrar Evento Econômico")
+    st.header("📰 Eventos Econômicos")
 
-    col1, col2 = st.columns(2)
-    with col1:
-        event_date = st.date_input("Data do Evento", value=date.today(), max_value=date.today(), key="event_date")
-    with col2:
-        event_time = st.time_input("Hora (opcional)", value=None, key="event_time")
-
-    col1, col2 = st.columns(2)
-    with col1:
-        category = st.selectbox(
-            "Categoria",
-            ["Inflação", "Focus", "Fiscal", "Emprego", "Político", "Monetário", "PIB", "Outro"]
-        )
-    with col2:
-        indicator = st.text_input("Indicador", placeholder="Ex: IPCA-15, Payroll, Selic")
-
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        forecast = st.text_input("Expectativa (Forecast)", placeholder="Ex: 0.42%")
-    with col2:
-        previous = st.text_input("Dado Anterior", placeholder="Ex: 0.62%")
-    with col3:
-        actual = st.text_input("Dado Real (Actual)", placeholder="Ex: 0.48%")
-
-    impact = st.select_slider("Impacto no Mercado", options=["Baixo", "Médio", "Alto"])
-
-    event_notes = st.text_area("Observações / Contexto", placeholder="Ex: Veio acima do esperado mas abaixo do anterior. Real caiu 0.5%.", key="event_notes")
-
-    if st.button("💾 Salvar Evento", type="primary", use_container_width=True):
-        event_dict = {
-            'date': str(event_date),
-            'time': str(event_time) if event_time else "",
-            'category': category,
-            'indicator': indicator,
-            'forecast': forecast,
-            'previous': previous,
-            'actual': actual,
-            'impact': impact,
-            'notes': event_notes
-        }
-
-        save_event_data(event_dict)
-        st.success(f"✅ Evento registrado com sucesso!")
-        st.rerun()
-
-    # Mostra ultimos eventos
-    st.markdown("---")
-    st.subheader("Últimos Eventos Registrados")
+    # Carregar eventos existentes
     events_df = load_events_data()
-    if len(events_df) > 0:
-        st.dataframe(events_df.head(10), use_container_width=True)
-    else:
-        st.info("Nenhum evento registrado ainda.")
+
+    # Duas colunas: formulário e lista
+    col_form, col_list = st.columns([1, 1])
+
+    with col_form:
+        st.subheader("Adicionar/Editar Evento")
+
+        # Seletor de evento existente para editar
+        if len(events_df) > 0:
+            events_df['display'] = events_df.apply(
+                lambda x: f"{pd.to_datetime(x['date']).strftime('%d/%m/%Y')} - {x['indicator']}",
+                axis=1
+            )
+            evento_options = ["Novo evento"] + events_df['display'].tolist()
+            selected_event = st.selectbox("Evento", evento_options)
+
+            if selected_event != "Novo evento":
+                # Carregar dados do evento selecionado
+                idx = evento_options.index(selected_event) - 1
+                evento_data = events_df.iloc[idx]
+                editing = True
+            else:
+                evento_data = None
+                editing = False
+        else:
+            evento_data = None
+            editing = False
+            st.info("Nenhum evento cadastrado ainda. Adicione o primeiro!")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            event_date = st.date_input(
+                "Data do Evento",
+                value=pd.to_datetime(evento_data['date']).date() if editing else date.today(),
+                max_value=date.today(),
+                key="event_date"
+            )
+        with col2:
+            event_time = st.time_input("Hora (opcional)", value=None, key="event_time")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            category = st.selectbox(
+                "Categoria",
+                ["Inflação", "Focus", "Fiscal", "Emprego", "Político", "Monetário", "PIB", "Outro"],
+                index=["Inflação", "Focus", "Fiscal", "Emprego", "Político", "Monetário", "PIB", "Outro"].index(evento_data['category']) if editing and evento_data['category'] in ["Inflação", "Focus", "Fiscal", "Emprego", "Político", "Monetário", "PIB", "Outro"] else 0
+            )
+        with col2:
+            indicator = st.text_input(
+                "Indicador",
+                value=evento_data['indicator'] if editing else "",
+                placeholder="Ex: IPCA-15, Payroll, Selic"
+            )
+
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            forecast = st.text_input(
+                "Expectativa",
+                value=evento_data['forecast'] if editing else "",
+                placeholder="Ex: 0.42%"
+            )
+        with col2:
+            previous = st.text_input(
+                "Anterior",
+                value=evento_data['previous'] if editing else "",
+                placeholder="Ex: 0.62%"
+            )
+        with col3:
+            actual = st.text_input(
+                "Real",
+                value=evento_data['actual'] if editing else "",
+                placeholder="Ex: 0.48%"
+            )
+
+        impact = st.select_slider(
+            "Impacto",
+            options=["Baixo", "Médio", "Alto"],
+            value=evento_data['impact'] if editing and evento_data['impact'] in ["Baixo", "Médio", "Alto"] else "Médio"
+        )
+
+        event_notes = st.text_area(
+            "Observações",
+            value=evento_data['notes'] if editing else "",
+            placeholder="Ex: Veio acima do esperado. Real caiu 0.5%.",
+            key="event_notes"
+        )
+
+        if st.button("💾 Salvar Evento", type="primary", width="stretch"):
+            event_dict = {
+                'date': str(event_date),
+                'time': str(event_time) if event_time else "",
+                'category': category,
+                'indicator': indicator,
+                'forecast': forecast,
+                'previous': previous,
+                'actual': actual,
+                'impact': impact,
+                'notes': event_notes
+            }
+
+            save_event_data(event_dict)
+            st.success(f"✅ Evento {'atualizado' if editing else 'registrado'}!", icon="✅")
+            st.balloons()
+            time_module.sleep(1)
+            st.rerun()
+
+    with col_list:
+        st.subheader("Eventos Cadastrados")
+        if len(events_df) > 0:
+            # Formatar data para exibição
+            display_df = events_df.copy()
+            display_df['date'] = pd.to_datetime(display_df['date']).dt.strftime('%d/%m/%Y')
+            st.dataframe(display_df, use_container_width=True, height=600)
+        else:
+            st.info("Nenhum evento cadastrado")
 
 # ===== TAB 3: VISUALIZACOES =====
 with tab3:
@@ -412,7 +477,10 @@ with tab4:
     df = load_market_data()
 
     if len(df) > 0:
-        st.dataframe(df, use_container_width=True, height=400)
+        # Formatar data para exibição brasileira
+        display_df = df.copy()
+        display_df['date'] = pd.to_datetime(display_df['date']).dt.strftime('%d/%m/%Y')
+        st.dataframe(display_df, use_container_width=True, height=400)
 
         # Botao para download
         csv = df.to_csv(index=False).encode('utf-8')

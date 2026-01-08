@@ -83,14 +83,32 @@ def save_market_data(data_dict):
 
 
 def save_event_data(data_dict):
-    """Salva novo evento economico"""
+    """Salva ou atualiza evento economico"""
     df = load_events_data()
 
-    new_row = pd.DataFrame([data_dict])
-    df = pd.concat([df, new_row], ignore_index=True)
+    # Verifica se já existe evento com mesma data + indicador
+    existing = df[
+        (df['date'] == data_dict['date']) &
+        (df['indicator'] == data_dict['indicator'])
+    ]
+
+    if len(existing) > 0:
+        # Atualiza registro existente
+        for key, value in data_dict.items():
+            df.loc[
+                (df['date'] == data_dict['date']) &
+                (df['indicator'] == data_dict['indicator']),
+                key
+            ] = value
+        action = "atualizado"
+    else:
+        # Adiciona novo registro
+        new_row = pd.DataFrame([data_dict])
+        df = pd.concat([df, new_row], ignore_index=True)
+        action = "adicionado"
 
     # Ordena por data
     df = df.sort_values('date', ascending=False)
     df.to_csv("data/economic_events.csv", index=False)
 
-    return "adicionado"
+    return action
