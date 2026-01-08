@@ -1,7 +1,10 @@
 # Plano: Sistema de Tracking Diário de Ativos
 
-**Data:** 05/01/2026
+**Data inicial:** 05/01/2026
+**Última atualização:** 07/01/2026
 **Objetivo:** Criar sistema para registrar dados diários de ativos financeiros globais e estudar correlações com o Real brasileiro
+
+**Status:** ✅ FASE 1 IMPLEMENTADA - App Streamlit funcionando com input manual completo
 
 ---
 
@@ -38,14 +41,20 @@ Sistema de tracking diário de 23 ativos financeiros + registro de eventos econ�
 
 ### Implementação em 3 Fases
 
-| Fase | O Que | Quando |
+| Fase | O Que | Status |
 |------|-------|--------|
-| **1. MVP Streamlit** | Formulário manual para preencher dados diários | Esta semana |
-| **2. Automação** | Web scraping busca dados automaticamente | Futuro (após 2-3 semanas de uso) |
-| **3. Análise** | Correlações, cupom cambial, regime analysis | Após acumular 30-60 dias |
+| **1. MVP Streamlit** | Formulário manual para preencher dados diários | ✅ **CONCLUÍDO** |
+| **2. Automação** | Web scraping busca dados automaticamente | ⏭️ Futuro (após 2-3 semanas de uso) |
+| **3. Análise** | Correlações, cupom cambial, regime analysis | ⏭️ Após acumular 30-60 dias |
 
-### Próximo Passo: Começar?
-Se aprovado, começamos implementando o app Streamlit para input manual.
+### ✅ Fase 1 Completa!
+App Streamlit funcionando em `http://localhost:8501` com:
+- Formulário completo para 23 ativos
+- **Campos duplos:** Valor + Variação % para TODOS ativos principais, moedas EM e ETFs
+- BRL Futures CME expandido (Open/High/Low/Last)
+- Treasuries com Yield + Variação em bps
+- Sistema de tabs: Novo Registro | Histórico | Eventos Econômicos | Análises
+- CSV automático em `data/market_tracking.csv`
 
 ---
 
@@ -90,7 +99,7 @@ Se aprovado, começamos implementando o app Streamlit para input manual.
 - **VALE** - Vale ADR (NYSE)
 - **PBR-A** - Petrobras ADR (NYSE)
 - **ITUB** - Itaú ADR (NYSE)
-- **BBDC** - Bradesco ADR (NYSE) - *Substituindo BBAS3 por consistência (todas ADRs NYSE)*
+- **BBDC** - Bradesco ADR (NYSE)
 
 **Total:** 23 ativos
 
@@ -228,36 +237,85 @@ Insights automáticos
 
 ### Arquivo CSV: `data/market_tracking.csv`
 
+**✅ ATUALIZADO 07/01/2026:** Agora inclui campos de variação % para TODOS os ativos principais
+
 | Coluna | Tipo | Descrição |
 |--------|------|-----------|
 | `date` | Date | Data do registro (YYYY-MM-DD) |
 | `time` | Time | Hora do registro (HH:MM) |
-| `dxy` | Float | Dollar Index |
-| `vix` | Float | VIX |
-| `iron_ore` | Float | Minério Ferro (USD/ton) |
-| `brent` | Float | Petróleo Brent (USD/barril) |
-| `wti` | Float | Petróleo WTI (USD/barril) |
-| `usd_ars` | Float | USD/ARS |
-| `usd_aud` | Float | USD/AUD |
-| `usd_clp` | Float | USD/CLP |
-| `usd_mxn` | Float | USD/MXN |
-| `usd_inr` | Float | USD/INR |
-| `usd_try` | Float | USD/TRY |
-| `usd_zar` | Float | USD/ZAR |
-| `sp500_fut` | Float | S&P 500 Futures |
-| `us_2y` | Float | Treasury 2Y yield (%) |
-| `us_10y` | Float | Treasury 10Y yield (%) |
-| `cds_br_5y` | Float | CDS Brasil 5Y (bps) |
-| `brl_futures_cme` | Float | BRL Futures (CME) |
-| `ewz` | Float | ETF EWZ |
-| `eww` | Float | ETF EWW |
-| `tur` | Float | ETF TUR |
-| `emb` | Float | ETF EMB |
-| `vale` | Float | VALE ADR |
-| `pbr_a` | Float | PBR-A ADR |
-| `itub` | Float | ITUB ADR |
-| `bbdc` | Float | BBDC ADR |
+| **Índices e Volatilidade** | | |
+| `dxy` | Float | Dollar Index - Valor |
+| `dxy_chg` | Float | DXY - Variação % |
+| `vix` | Float | VIX - Valor |
+| `vix_chg` | Float | VIX - Variação % |
+| `sp500_fut` | Float | S&P 500 Fut - Valor |
+| `sp500_chg` | Float | S&P 500 Fut - Variação % |
+| **Commodities** | | |
+| `iron_ore` | Float | Minério Ferro (USD/ton) - Valor |
+| `iron_ore_chg` | Float | Minério Ferro - Variação % |
+| `brent` | Float | Petróleo Brent (USD/bbl) - Valor |
+| `brent_chg` | Float | Brent - Variação % |
+| `wti` | Float | Petróleo WTI (USD/bbl) - Valor |
+| `wti_chg` | Float | WTI - Variação % |
+| **Pares de Moeda EM** | | |
+| `usd_ars` | Float | USD/ARS - Valor |
+| `usd_ars_chg` | Float | USD/ARS - Variação % |
+| `usd_aud` | Float | USD/AUD - Valor |
+| `usd_aud_chg` | Float | USD/AUD - Variação % |
+| `usd_clp` | Float | USD/CLP - Valor |
+| `usd_clp_chg` | Float | USD/CLP - Variação % |
+| `usd_mxn` | Float | USD/MXN - Valor |
+| `usd_mxn_chg` | Float | USD/MXN - Variação % |
+| `usd_inr` | Float | USD/INR - Valor |
+| `usd_inr_chg` | Float | USD/INR - Variação % |
+| `usd_try` | Float | USD/TRY - Valor |
+| `usd_try_chg` | Float | USD/TRY - Variação % |
+| `usd_zar` | Float | USD/ZAR - Valor |
+| `usd_zar_chg` | Float | USD/ZAR - Variação % |
+| **Treasuries** | | |
+| `us_2y` | Float | Treasury 2Y - Yield (%) |
+| `us_2y_chg` | Float | Treasury 2Y - Variação (bps) |
+| `us_10y` | Float | Treasury 10Y - Yield (%) |
+| `us_10y_chg` | Float | Treasury 10Y - Variação (bps) |
+| **Risco Brasil** | | |
+| `cds_br_5y` | Float | CDS Brasil 5Y (bps) - Valor |
+| `cds_br_chg` | Float | CDS BR - Variação % |
+| **BRL Futures CME (OHLC)** | | |
+| `brl_fut_open` | Float | BRL Futures - Abertura |
+| `brl_fut_high` | Float | BRL Futures - Máxima |
+| `brl_fut_low` | Float | BRL Futures - Mínima |
+| `brl_fut_last` | Float | BRL Futures - Atual/Fechamento |
+| **ETFs** | | |
+| `ewz` | Float | EWZ - Valor |
+| `ewz_chg` | Float | EWZ - Variação % |
+| `eww` | Float | EWW - Valor |
+| `eww_chg` | Float | EWW - Variação % |
+| `tur` | Float | TUR - Valor |
+| `tur_chg` | Float | TUR - Variação % |
+| `emb` | Float | EMB - Valor |
+| `emb_chg` | Float | EMB - Variação % |
+| **ADRs Brasileiras** | | |
+| `vale` | Float | VALE - Valor |
+| `vale_chg` | Float | VALE - Variação % |
+| `pbr_a` | Float | PBR-A - Valor |
+| `pbr_chg` | Float | PBR-A - Variação % |
+| `itub` | Float | ITUB - Valor |
+| `itub_chg` | Float | ITUB - Variação % |
+| `bbdc` | Float | BBDC - Valor |
+| `bbdc_chg` | Float | BBDC - Variação % |
+| **Observações** | | |
 | `notes` | Text | Observações opcionais |
+
+**Total de colunas:** 52 (date, time, 24 valores + 24 variações, notes)
+
+### 📝 Nota sobre Treasuries
+- **Yield (%)**: Valor absoluto do rendimento (ex: 3.467%)
+- **Variação (bps)**: Mudança em basis points
+  - Sites mostram: `U.S. 2Y: 3.467 | -0.06%`
+  - **Como preencher:**
+    - Yield (%): `3.467`
+    - Var (bps): `-6.0` (pega o -0.06% e multiplica por 100)
+  - **Regra rápida:** -0.06% de variação = -6.0 bps
 
 ### Arquivo CSV: `data/economic_events.csv`
 
@@ -281,44 +339,80 @@ Insights automáticos
 
 ---
 
-## 4. FASE 1 - APP STREAMLIT (Manual)
+## 4. FASE 1 - APP STREAMLIT (Manual) ✅ IMPLEMENTADO
 
-### Arquivos a Criar
+### Arquivos Criados
 
 ```
 trad/
 ├── app/
-│   ├── market_tracker.py          # App Streamlit principal
-│   ├── economic_events.py         # Formulário de eventos econômicos
-│   └── utils.py                   # Funções auxiliares
+│   ├── market_tracker.py          # ✅ App Streamlit principal com 4 tabs
+│   └── utils.py                   # ✅ Funções auxiliares (CSV handling)
 ├── data/
-│   ├── market_tracking.csv        # Dados de mercado diários
-│   └── economic_events.csv        # Eventos econômicos
-└── requirements_app.txt           # Dependências Streamlit
+│   ├── market_tracking.csv        # ✅ Criado automaticamente ao salvar
+│   └── economic_events.csv        # ✅ Criado automaticamente
+└── requirements_app.txt           # ✅ Dependências instaladas
 ```
 
-### Funcionalidades do App
+### Funcionalidades Implementadas
 
-1. **Formulário de Entrada**
-   - Campo de data (default: hoje)
-   - Campo de hora (default: agora)
-   - Campos numéricos para cada ativo
-   - Campo de texto para notas
-   - Botão "Salvar Registro"
+**Tab 1: 📝 Novo Registro** ✅
+- Campo de data (default: hoje, editável)
+- Campo de hora (default: agora, editável com help text)
+- **52 campos numéricos** organizados em seções:
+  - 📉 Índices e Volatilidade (DXY, VIX, S&P 500) - Valor + Var %
+  - 🛢️ Commodities (Ferro, Brent, WTI) - Valor + Var %
+  - 💱 Pares de Moeda EM (7 pares) - Valor + Var %
+  - 💵 Treasuries (2Y, 10Y) - Yield + Var bps
+  - 🇧🇷 Risco Brasil (CDS) - Valor + Var %
+  - 📈 BRL Futures CME - Open/High/Low/Last (OHLC)
+  - 📊 ETFs (EWZ, EWW, TUR, EMB) - Valor + Var %
+  - 🏢 ADRs Brasileiras (VALE, PBR, ITUB, BBDC) - Valor + Var %
+- Campo de texto para observações
+- Botão "💾 Salvar Registro"
+- Info box explicando que são valores absolutos
 
-2. **Validações**
-   - Data não pode ser futura
-   - Valores numéricos válidos
-   - Aviso se já existe registro para a data
+**Tab 2: 📊 Histórico** ✅
+- Tabela interativa com últimos registros
+- Ordenação reversa (mais recente primeiro)
+- Visualização de todos os campos salvos
 
-3. **Visualização**
-   - Tabela com últimos 10 registros
-   - Gráficos de linha para ativos selecionados
-   - Estatísticas básicas (média, min, max últimos 30 dias)
+**Tab 3: 📰 Eventos Econômicos** ✅
+- Formulário para registrar eventos macro
+- Campos: Data, Categoria, Indicador, Forecast, Previous, Actual, Impacto, Notes
+- CSV separado: `data/economic_events.csv`
 
-4. **Export**
-   - Botão para baixar CSV completo
-   - Botão para baixar Excel formatado
+**Tab 4: 📈 Análises** ✅
+- Placeholder para gráficos futuros
+- Mensagem: "Em breve: correlações, cupom cambial, regime analysis"
+
+### Decisões de UX Implementadas
+
+1. ✅ **Campos duplos obrigatórios** (Valor + % Change)
+   - Feedback do usuário: "Melhor colocar o preço e o percentual no momento"
+   - Aplicado a: Índices, Commodities, Moedas EM, ETFs, ADRs
+   - Total: 24 ativos com valor + variação
+
+2. ✅ **BRL Futures expandido para OHLC**
+   - Feedback do usuário: "Preciso que coloque: Abertura, Máxima, Mínima e Preço atual"
+   - 4 campos separados para visão completa do dia
+
+3. ✅ **Treasuries em Basis Points**
+   - Yield em % + Variação em bps (padrão do mercado)
+   - Conversão simples: -0.06% variação = -6.0 bps
+
+4. ✅ **Hora editável com help text**
+   - Feedback do usuário: "Não consigo atualizar a hora"
+   - Help text adicionado: "Editável - ajuste se necessário"
+
+### Validações Implementadas
+
+- ✅ Data e hora obrigatórias
+- ✅ Valores numéricos válidos
+- ✅ Update automático se registro já existe para a data
+- ✅ Mensagem de sucesso/atualização após salvar
+- ✅ CSV criado automaticamente se não existir
+- ✅ Ordenação por data (mais recentes primeiro)
 
 ---
 
@@ -379,19 +473,23 @@ date,open,high,low,close,volume
 
 ## 7. ROADMAP DE IMPLEMENTAÇÃO
 
-### Sprint 1: MVP Streamlit (Esta Semana)
-- [ ] Criar estrutura de pastas
-- [ ] Implementar formulário Streamlit
-- [ ] Salvar dados em CSV
-- [ ] Visualização básica (tabela + 1 gráfico)
-- [ ] Testar com 5 dias de dados
+### Sprint 1: MVP Streamlit ✅ CONCLUÍDO (07/01/2026)
+- [x] Criar estrutura de pastas
+- [x] Implementar formulário Streamlit com 4 tabs
+- [x] Salvar dados em CSV
+- [x] Visualização básica (tabela no tab Histórico)
+- [x] Adicionar campos de variação % para TODOS os ativos
+- [x] Expandir BRL Futures para OHLC
+- [x] Implementar sistema de eventos econômicos
+- [x] Validações e help texts
 
-### Sprint 2: Melhorias UX (Semana 2)
-- [ ] Gráficos interativos (plotly)
-- [ ] Comparação multi-ativos
-- [ ] Estatísticas descritivas
+### Sprint 2: Melhorias UX e Análises (Próximo)
+- [ ] Gráficos interativos (plotly) no tab Análises
+- [ ] Comparação multi-ativos (overlay charts)
+- [ ] Estatísticas descritivas (média, min, max 30d)
 - [ ] Export para Excel formatado
-- [ ] Validações robustas
+- [ ] Dashboard de overview (cards com últimos valores)
+- [ ] Filtros por período no histórico
 
 ### Sprint 3: Preparação para Automação (Semana 3-4)
 - [ ] Pesquisar APIs disponíveis
@@ -432,23 +530,72 @@ date,open,high,low,close,volume
 ## 9. PRÓXIMOS PASSOS IMEDIATOS
 
 1. ✅ **Criar este plano**
-2. ⏭️ **Implementar app Streamlit básico**
-   - Formulário com os 23 ativos
+2. ✅ **Implementar app Streamlit completo**
+   - Formulário com 23 ativos + campos de variação
+   - Sistema de tabs (Registro, Histórico, Eventos, Análises)
    - Salvar em CSV
    - Mostrar últimos registros
-3. ⏭️ **Testar com dados reais por 1 semana**
-4. ⏭️ **Ajustar baseado no uso**
-5. ⏭️ **Planejar automação baseado em aprendizado**
+3. 🔄 **AGORA: Testar com dados reais**
+   - Começar a preencher dados diários
+   - Usar por 1-2 semanas para validar UX
+   - Identificar padrões e necessidades
+4. ⏭️ **Próximo: Adicionar visualizações**
+   - Gráficos interativos no tab Análises
+   - Estatísticas descritivas
+   - Dashboard de overview
+5. ⏭️ **Futuro: Planejar automação**
+   - Após 2-3 semanas de uso manual
+   - Baseado em aprendizado e feedback
 
 ---
 
-## 10. OBSERVAÇÕES
+## 10. OBSERVAÇÕES E APRENDIZADOS
 
-- **Flexibilidade:** Começar simples, iterar baseado no uso real
-- **Manual é OK:** Preencher manualmente por algumas semanas ajuda a entender os dados
-- **Correlação vem depois:** Precisamos de pelo menos 30-60 dias de dados para análises significativas
-- **Integração COT:** Possível merge futuro entre dados COT (semanal) e tracking diário
+### Decisões de Design Validadas ✅
+
+1. **Campos duplos são essenciais**
+   - Inicialmente planejamos apenas valor
+   - Feedback do usuário mostrou necessidade de tracking de variação
+   - Solução: 24 ativos com valor + % change = 48 campos de dados
+
+2. **OHLC para BRL Futures**
+   - Inicialmente era apenas 1 campo "BRL Futures"
+   - Usuário solicitou visão completa do dia
+   - Implementado: Open/High/Low/Last (4 campos)
+
+3. **Treasuries em Basis Points**
+   - Mantido padrão do mercado financeiro
+   - Help text para conversão simplificada
+   - Sites mostram "-0.06%" → Usuário preenche "-6.0 bps"
+
+4. **Eventos econômicos separados**
+   - CSV isolado evita misturar dados de mercado com eventos
+   - Facilita análise futura de "surpresas econômicas"
+
+### Princípios Mantidos ✅
+
+- **Flexibilidade:** App evoluiu baseado em feedback real
+- **Manual é OK:** Preencher manualmente ajuda a entender os dados
+- **Correlação vem depois:** Precisamos de 30-60 dias de dados primeiro
+- **Integração COT:** Merge futuro entre COT (semanal) e tracking diário
+
+### Changelog
+
+**07/01/2026:**
+- ✅ Adicionados campos `_chg` para todos ativos principais
+- ✅ Expandido moedas EM: valor + variação % (7 pares)
+- ✅ Expandido ETFs: valor + variação % (4 ETFs)
+- ✅ BRL Futures CME: 1 campo → 4 campos OHLC
+- ✅ Help texts adicionados (hora editável, basis points)
+- ✅ Total de colunas: 52 (date, time, 48 campos de dados, notes)
+
+**05/01/2026:**
+- ✅ Plano inicial criado
+- ✅ App Streamlit básico implementado
+- ✅ Sistema de tabs e CSV automático
 
 ---
 
-**Status:** 📋 PLANEJADO - Aguardando aprovação para iniciar implementação
+**Status:** ✅ FASE 1 COMPLETA - Rodando em `http://localhost:8501`
+
+**Próximo:** Sprint 2 - Gráficos e análises interativas
