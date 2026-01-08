@@ -21,9 +21,9 @@ def ensure_data_files():
             'usd_mxn', 'usd_mxn_chg', 'usd_inr', 'usd_inr_chg', 'usd_try', 'usd_try_chg', 'usd_zar', 'usd_zar_chg',
             'us_2y', 'us_2y_chg', 'us_10y', 'us_10y_chg',
             'cds_br_5y', 'cds_br_chg',
-            'brl_fut_open', 'brl_fut_high', 'brl_fut_low', 'brl_fut_last',
+            'brl_fut_prev_settle', 'brl_fut_prev_high', 'brl_fut_prev_low', 'brl_fut_prev_poc',
             'ewz', 'ewz_chg', 'eww', 'eww_chg', 'tur', 'tur_chg', 'emb', 'emb_chg',
-            'vale', 'vale_chg', 'pbr_a', 'pbr_chg', 'itub', 'itub_chg', 'bbdc', 'bbdc_chg',
+            'vale', 'vale_chg', 'pbr_a', 'pbr_chg', 'itub', 'itub_chg', 'bbdo', 'bbdo_chg',
             'notes'
         ]
         df = pd.DataFrame(columns=columns)

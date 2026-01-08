@@ -11,7 +11,13 @@
       "Bash(git add:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: Sistema de analise COT com percentis historicos\n\n- Script para extrair dados COT da CFTC \\(BRL, DXY, T10Y\\)\n- Calculo de percentis comparando com 5 anos de historico\n- Classificacao de regime \\(BAIXO/MODERADO/ELEVADO\\)\n- Relatorios datados e tracking de evolucao semanal\n- Documentacao completa em SOBRE_COT.md\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git remote add:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(git commit:*)",
+      "Bash(streamlit run:*)",
+      "Bash(taskkill:*)",
+      "Bash(pkill:*)",
+      "Bash(xargs kill -9)",
+      "Bash(cat:*)"
     ]
   }
 }

@@ -8,10 +8,26 @@ from datetime import datetime, date, time
 import plotly.graph_objects as go
 import sys
 import os
+import time as time_module
 
 # Adiciona o diretorio pai ao path para importar utils
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.utils import load_market_data, load_events_data, save_market_data, save_event_data, ensure_data_files
+
+
+# Funcao para normalizar numeros com virgula
+def normalize_number(value):
+    """Converte vírgula para ponto e retorna float ou None"""
+    if value is None:
+        return None
+    if isinstance(value, str):
+        # Remove espaços e troca vírgula por ponto
+        value = value.strip().replace(',', '.')
+        try:
+            return float(value) if value else None
+        except ValueError:
+            return None
+    return value
 
 
 # Configuracao da pagina
@@ -48,221 +64,224 @@ with tab1:
     st.subheader("📉 Índices e Volatilidade")
     col1, col2 = st.columns(2)
     with col1:
-        dxy = st.number_input("DXY - Valor", value=None, format="%.2f", step=0.01, key="dxy_val")
+        dxy = st.text_input("DXY - Valor", value="", key="dxy_val")
     with col2:
-        dxy_chg = st.number_input("DXY - Var %", value=None, format="%.2f", step=0.01, key="dxy_chg", help="Variação % vs fechamento anterior")
+        dxy_chg = st.text_input("DXY - Var %", value="", key="dxy_chg", help="Variação % vs fechamento anterior")
 
     col1, col2 = st.columns(2)
     with col1:
-        vix = st.number_input("VIX - Valor", value=None, format="%.2f", step=0.01, key="vix_val")
+        vix = st.text_input("VIX - Valor", value="", key="vix_val")
     with col2:
-        vix_chg = st.number_input("VIX - Var %", value=None, format="%.2f", step=0.01, key="vix_chg")
+        vix_chg = st.text_input("VIX - Var %", value="", key="vix_chg")
 
     col1, col2 = st.columns(2)
     with col1:
-        sp500_fut = st.number_input("S&P 500 Fut - Valor", value=None, format="%.2f", step=0.01, key="sp500_val")
+        sp500_fut = st.text_input("S&P 500 Fut - Valor", value="", key="sp500_val")
     with col2:
-        sp500_chg = st.number_input("S&P 500 Fut - Var %", value=None, format="%.2f", step=0.01, key="sp500_chg")
+        sp500_chg = st.text_input("S&P 500 Fut - Var %", value="", key="sp500_chg")
 
     st.subheader("🛢️ Commodities")
     col1, col2 = st.columns(2)
     with col1:
-        iron_ore = st.number_input("Minério Ferro - Valor (USD/ton)", value=None, format="%.2f", step=0.01, key="iron_val")
+        iron_ore = st.text_input("Minério Ferro - Valor (USD/ton)", value="", key="iron_val")
     with col2:
-        iron_ore_chg = st.number_input("Minério Ferro - Var %", value=None, format="%.2f", step=0.01, key="iron_chg")
+        iron_ore_chg = st.text_input("Minério Ferro - Var %", value="", key="iron_chg")
 
     col1, col2 = st.columns(2)
     with col1:
-        brent = st.number_input("Brent - Valor (USD/bbl)", value=None, format="%.2f", step=0.01, key="brent_val")
+        brent = st.text_input("Brent - Valor (USD/bbl)", value="", key="brent_val")
     with col2:
-        brent_chg = st.number_input("Brent - Var %", value=None, format="%.2f", step=0.01, key="brent_chg")
+        brent_chg = st.text_input("Brent - Var %", value="", key="brent_chg")
 
     col1, col2 = st.columns(2)
     with col1:
-        wti = st.number_input("WTI - Valor (USD/bbl)", value=None, format="%.2f", step=0.01, key="wti_val")
+        wti = st.text_input("WTI - Valor (USD/bbl)", value="", key="wti_val")
     with col2:
-        wti_chg = st.number_input("WTI - Var %", value=None, format="%.2f", step=0.01, key="wti_chg")
+        wti_chg = st.text_input("WTI - Var %", value="", key="wti_chg")
 
     st.subheader("💱 Pares de Moeda (USD/XXX)")
 
     # USD/ARS
     col1, col2 = st.columns(2)
     with col1:
-        usd_ars = st.number_input("USD/ARS - Valor", value=None, format="%.2f", step=0.01, key="ars_val")
+        usd_ars = st.text_input("USD/ARS - Valor", value="", key="ars_val")
     with col2:
-        usd_ars_chg = st.number_input("USD/ARS - Var %", value=None, format="%.2f", step=0.01, key="ars_chg")
+        usd_ars_chg = st.text_input("USD/ARS - Var %", value="", key="ars_chg")
 
     # USD/AUD
     col1, col2 = st.columns(2)
     with col1:
-        usd_aud = st.number_input("USD/AUD - Valor", value=None, format="%.4f", step=0.0001, key="aud_val")
+        usd_aud = st.text_input("USD/AUD - Valor", value="", key="aud_val")
     with col2:
-        usd_aud_chg = st.number_input("USD/AUD - Var %", value=None, format="%.2f", step=0.01, key="aud_chg")
+        usd_aud_chg = st.text_input("USD/AUD - Var %", value="", key="aud_chg")
 
     # USD/CLP
     col1, col2 = st.columns(2)
     with col1:
-        usd_clp = st.number_input("USD/CLP - Valor", value=None, format="%.2f", step=0.01, key="clp_val")
+        usd_clp = st.text_input("USD/CLP - Valor", value="", key="clp_val")
     with col2:
-        usd_clp_chg = st.number_input("USD/CLP - Var %", value=None, format="%.2f", step=0.01, key="clp_chg")
+        usd_clp_chg = st.text_input("USD/CLP - Var %", value="", key="clp_chg")
 
     # USD/MXN
     col1, col2 = st.columns(2)
     with col1:
-        usd_mxn = st.number_input("USD/MXN - Valor", value=None, format="%.4f", step=0.0001, key="mxn_val")
+        usd_mxn = st.text_input("USD/MXN - Valor", value="", key="mxn_val")
     with col2:
-        usd_mxn_chg = st.number_input("USD/MXN - Var %", value=None, format="%.2f", step=0.01, key="mxn_chg")
+        usd_mxn_chg = st.text_input("USD/MXN - Var %", value="", key="mxn_chg")
 
     # USD/INR
     col1, col2 = st.columns(2)
     with col1:
-        usd_inr = st.number_input("USD/INR - Valor", value=None, format="%.2f", step=0.01, key="inr_val")
+        usd_inr = st.text_input("USD/INR - Valor", value="", key="inr_val")
     with col2:
-        usd_inr_chg = st.number_input("USD/INR - Var %", value=None, format="%.2f", step=0.01, key="inr_chg")
+        usd_inr_chg = st.text_input("USD/INR - Var %", value="", key="inr_chg")
 
     # USD/TRY
     col1, col2 = st.columns(2)
     with col1:
-        usd_try = st.number_input("USD/TRY - Valor", value=None, format="%.2f", step=0.01, key="try_val")
+        usd_try = st.text_input("USD/TRY - Valor", value="", key="try_val")
     with col2:
-        usd_try_chg = st.number_input("USD/TRY - Var %", value=None, format="%.2f", step=0.01, key="try_chg")
+        usd_try_chg = st.text_input("USD/TRY - Var %", value="", key="try_chg")
 
     # USD/ZAR
     col1, col2 = st.columns(2)
     with col1:
-        usd_zar = st.number_input("USD/ZAR - Valor", value=None, format="%.2f", step=0.01, key="zar_val")
+        usd_zar = st.text_input("USD/ZAR - Valor", value="", key="zar_val")
     with col2:
-        usd_zar_chg = st.number_input("USD/ZAR - Var %", value=None, format="%.2f", step=0.01, key="zar_chg")
+        usd_zar_chg = st.text_input("USD/ZAR - Var %", value="", key="zar_chg")
 
     st.subheader("💵 Treasuries")
     col1, col2 = st.columns(2)
     with col1:
-        us_2y = st.number_input("U.S. 2Y - Yield (%)", value=None, format="%.3f", step=0.001, key="us2y_val")
+        us_2y = st.text_input("U.S. 2Y - Yield (%)", value="", key="us2y_val")
     with col2:
-        us_2y_chg = st.number_input("U.S. 2Y - Var (bps)", value=None, format="%.1f", step=0.1, key="us2y_chg", help="Variação em basis points")
+        us_2y_chg = st.text_input("U.S. 2Y - Var (bps)", value="", key="us2y_chg", help="Variação em basis points")
 
     col1, col2 = st.columns(2)
     with col1:
-        us_10y = st.number_input("U.S. 10Y - Yield (%)", value=None, format="%.3f", step=0.001, key="us10y_val")
+        us_10y = st.text_input("U.S. 10Y - Yield (%)", value="", key="us10y_val")
     with col2:
-        us_10y_chg = st.number_input("U.S. 10Y - Var (bps)", value=None, format="%.1f", step=0.1, key="us10y_chg", help="Variação em basis points")
+        us_10y_chg = st.text_input("U.S. 10Y - Var (bps)", value="", key="us10y_chg", help="Variação em basis points")
 
     st.subheader("🇧🇷 Risco Brasil")
     col1, col2 = st.columns(2)
     with col1:
-        cds_br_5y = st.number_input("CDS BR 5Y - Valor (bps)", value=None, format="%.2f", step=0.01, key="cds_val")
+        cds_br_5y = st.text_input("CDS BR 5Y - Valor (bps)", value="", key="cds_val")
     with col2:
-        cds_br_chg = st.number_input("CDS BR 5Y - Var %", value=None, format="%.2f", step=0.01, key="cds_chg")
+        cds_br_chg = st.text_input("CDS BR 5Y - Var %", value="", key="cds_chg")
 
-    st.subheader("📈 BRL Futures (CME)")
-    st.caption("Valores absolutos do contrato futuro de Real na bolsa de Chicago")
+    st.subheader("📈 BRL Futures (CME) - Pregão Anterior")
+    st.caption("Preencha ANTES do mercado abrir com os dados do dia anterior (para referência)")
+
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        brl_fut_open = st.number_input("Abertura", value=None, format="%.4f", step=0.0001, key="brl_open")
+        brl_fut_prev_settle = st.text_input("Ajuste Anterior", value="", key="brl_prev_settle", help="Settlement do dia anterior")
     with col2:
-        brl_fut_high = st.number_input("Máxima", value=None, format="%.4f", step=0.0001, key="brl_high")
+        brl_fut_prev_high = st.text_input("Máxima Anterior", value="", key="brl_prev_high")
     with col3:
-        brl_fut_low = st.number_input("Mínima", value=None, format="%.4f", step=0.0001, key="brl_low")
+        brl_fut_prev_low = st.text_input("Mínima Anterior", value="", key="brl_prev_low")
     with col4:
-        brl_fut_last = st.number_input("Atual/Fechamento", value=None, format="%.4f", step=0.0001, key="brl_last")
+        brl_fut_prev_poc = st.text_input("POC Anterior", value="", key="brl_prev_poc", help="Point of Control do dia anterior")
 
     st.subheader("📊 ETFs - Países/Emergentes")
 
     # EWZ
     col1, col2 = st.columns(2)
     with col1:
-        ewz = st.number_input("EWZ - Valor", value=None, format="%.2f", step=0.01, key="ewz_val")
+        ewz = st.text_input("EWZ - Valor", value="", key="ewz_val")
     with col2:
-        ewz_chg = st.number_input("EWZ - Var %", value=None, format="%.2f", step=0.01, key="ewz_chg")
+        ewz_chg = st.text_input("EWZ - Var %", value="", key="ewz_chg")
 
     # EWW
     col1, col2 = st.columns(2)
     with col1:
-        eww = st.number_input("EWW - Valor", value=None, format="%.2f", step=0.01, key="eww_val")
+        eww = st.text_input("EWW - Valor", value="", key="eww_val")
     with col2:
-        eww_chg = st.number_input("EWW - Var %", value=None, format="%.2f", step=0.01, key="eww_chg")
+        eww_chg = st.text_input("EWW - Var %", value="", key="eww_chg")
 
     # TUR
     col1, col2 = st.columns(2)
     with col1:
-        tur = st.number_input("TUR - Valor", value=None, format="%.2f", step=0.01, key="tur_val")
+        tur = st.text_input("TUR - Valor", value="", key="tur_val")
     with col2:
-        tur_chg = st.number_input("TUR - Var %", value=None, format="%.2f", step=0.01, key="tur_chg")
+        tur_chg = st.text_input("TUR - Var %", value="", key="tur_chg")
 
     # EMB
     col1, col2 = st.columns(2)
     with col1:
-        emb = st.number_input("EMB - Valor", value=None, format="%.2f", step=0.01, key="emb_val")
+        emb = st.text_input("EMB - Valor", value="", key="emb_val")
     with col2:
-        emb_chg = st.number_input("EMB - Var %", value=None, format="%.2f", step=0.01, key="emb_chg")
+        emb_chg = st.text_input("EMB - Var %", value="", key="emb_chg")
 
     st.subheader("🏢 ADRs Brasileiras (NYSE)")
     col1, col2 = st.columns(2)
     with col1:
-        vale = st.number_input("VALE - Valor", value=None, format="%.2f", step=0.01, key="vale_val")
+        vale = st.text_input("VALE - Valor", value="", key="vale_val")
     with col2:
-        vale_chg = st.number_input("VALE - Var %", value=None, format="%.2f", step=0.01, key="vale_chg")
+        vale_chg = st.text_input("VALE - Var %", value="", key="vale_chg")
 
     col1, col2 = st.columns(2)
     with col1:
-        pbr_a = st.number_input("PBR-A - Valor", value=None, format="%.2f", step=0.01, key="pbr_val")
+        pbr_a = st.text_input("PBR-A - Valor", value="", key="pbr_val")
     with col2:
-        pbr_chg = st.number_input("PBR-A - Var %", value=None, format="%.2f", step=0.01, key="pbr_chg")
+        pbr_chg = st.text_input("PBR-A - Var %", value="", key="pbr_chg")
 
     col1, col2 = st.columns(2)
     with col1:
-        itub = st.number_input("ITUB - Valor", value=None, format="%.2f", step=0.01, key="itub_val")
+        itub = st.text_input("ITUB - Valor", value="", key="itub_val")
     with col2:
-        itub_chg = st.number_input("ITUB - Var %", value=None, format="%.2f", step=0.01, key="itub_chg")
+        itub_chg = st.text_input("ITUB - Var %", value="", key="itub_chg")
 
     col1, col2 = st.columns(2)
     with col1:
-        bbdc = st.number_input("BBDC - Valor", value=None, format="%.2f", step=0.01, key="bbdc_val")
+        bbdo = st.text_input("BBDO - Valor", value="", key="bbdo_val", help="Bradesco ADR (NYSE)")
     with col2:
-        bbdc_chg = st.number_input("BBDC - Var %", value=None, format="%.2f", step=0.01, key="bbdc_chg")
+        bbdo_chg = st.text_input("BBDO - Var %", value="", key="bbdo_chg")
 
     st.subheader("📝 Observações")
     notes = st.text_area("Notas (opcional)", placeholder="Ex: Dia de volatilidade alta, Fed spoke, etc.")
 
     # Botao salvar
     if st.button("💾 Salvar Registro", type="primary", use_container_width=True):
-        # Monta dicionario
+        # Monta dicionario (normaliza todos os valores numéricos)
         data_dict = {
             'date': str(input_date),
             'time': str(input_time),
-            'dxy': dxy, 'dxy_chg': dxy_chg,
-            'vix': vix, 'vix_chg': vix_chg,
-            'sp500_fut': sp500_fut, 'sp500_chg': sp500_chg,
-            'iron_ore': iron_ore, 'iron_ore_chg': iron_ore_chg,
-            'brent': brent, 'brent_chg': brent_chg,
-            'wti': wti, 'wti_chg': wti_chg,
-            'usd_ars': usd_ars, 'usd_ars_chg': usd_ars_chg,
-            'usd_aud': usd_aud, 'usd_aud_chg': usd_aud_chg,
-            'usd_clp': usd_clp, 'usd_clp_chg': usd_clp_chg,
-            'usd_mxn': usd_mxn, 'usd_mxn_chg': usd_mxn_chg,
-            'usd_inr': usd_inr, 'usd_inr_chg': usd_inr_chg,
-            'usd_try': usd_try, 'usd_try_chg': usd_try_chg,
-            'usd_zar': usd_zar, 'usd_zar_chg': usd_zar_chg,
-            'us_2y': us_2y, 'us_2y_chg': us_2y_chg,
-            'us_10y': us_10y, 'us_10y_chg': us_10y_chg,
-            'cds_br_5y': cds_br_5y, 'cds_br_chg': cds_br_chg,
-            'brl_fut_open': brl_fut_open,
-            'brl_fut_high': brl_fut_high,
-            'brl_fut_low': brl_fut_low,
-            'brl_fut_last': brl_fut_last,
-            'ewz': ewz, 'ewz_chg': ewz_chg,
-            'eww': eww, 'eww_chg': eww_chg,
-            'tur': tur, 'tur_chg': tur_chg,
-            'emb': emb, 'emb_chg': emb_chg,
-            'vale': vale, 'vale_chg': vale_chg,
-            'pbr_a': pbr_a, 'pbr_chg': pbr_chg,
-            'itub': itub, 'itub_chg': itub_chg,
-            'bbdc': bbdc, 'bbdc_chg': bbdc_chg,
+            'dxy': normalize_number(dxy), 'dxy_chg': normalize_number(dxy_chg),
+            'vix': normalize_number(vix), 'vix_chg': normalize_number(vix_chg),
+            'sp500_fut': normalize_number(sp500_fut), 'sp500_chg': normalize_number(sp500_chg),
+            'iron_ore': normalize_number(iron_ore), 'iron_ore_chg': normalize_number(iron_ore_chg),
+            'brent': normalize_number(brent), 'brent_chg': normalize_number(brent_chg),
+            'wti': normalize_number(wti), 'wti_chg': normalize_number(wti_chg),
+            'usd_ars': normalize_number(usd_ars), 'usd_ars_chg': normalize_number(usd_ars_chg),
+            'usd_aud': normalize_number(usd_aud), 'usd_aud_chg': normalize_number(usd_aud_chg),
+            'usd_clp': normalize_number(usd_clp), 'usd_clp_chg': normalize_number(usd_clp_chg),
+            'usd_mxn': normalize_number(usd_mxn), 'usd_mxn_chg': normalize_number(usd_mxn_chg),
+            'usd_inr': normalize_number(usd_inr), 'usd_inr_chg': normalize_number(usd_inr_chg),
+            'usd_try': normalize_number(usd_try), 'usd_try_chg': normalize_number(usd_try_chg),
+            'usd_zar': normalize_number(usd_zar), 'usd_zar_chg': normalize_number(usd_zar_chg),
+            'us_2y': normalize_number(us_2y), 'us_2y_chg': normalize_number(us_2y_chg),
+            'us_10y': normalize_number(us_10y), 'us_10y_chg': normalize_number(us_10y_chg),
+            'cds_br_5y': normalize_number(cds_br_5y), 'cds_br_chg': normalize_number(cds_br_chg),
+            'brl_fut_prev_settle': normalize_number(brl_fut_prev_settle),
+            'brl_fut_prev_high': normalize_number(brl_fut_prev_high),
+            'brl_fut_prev_low': normalize_number(brl_fut_prev_low),
+            'brl_fut_prev_poc': normalize_number(brl_fut_prev_poc),
+            'ewz': normalize_number(ewz), 'ewz_chg': normalize_number(ewz_chg),
+            'eww': normalize_number(eww), 'eww_chg': normalize_number(eww_chg),
+            'tur': normalize_number(tur), 'tur_chg': normalize_number(tur_chg),
+            'emb': normalize_number(emb), 'emb_chg': normalize_number(emb_chg),
+            'vale': normalize_number(vale), 'vale_chg': normalize_number(vale_chg),
+            'pbr_a': normalize_number(pbr_a), 'pbr_chg': normalize_number(pbr_chg),
+            'itub': normalize_number(itub), 'itub_chg': normalize_number(itub_chg),
+            'bbdo': normalize_number(bbdo), 'bbdo_chg': normalize_number(bbdo_chg),
             'notes': notes
         }
 
         action = save_market_data(data_dict)
-        st.success(f"✅ Registro {action} com sucesso para {input_date}!")
+        st.success(f"✅ Registro {action} com sucesso para {input_date}!", icon="✅")
+        st.balloons()
+        time_module.sleep(2)  # Pausa para mostrar mensagem
         st.rerun()
 
 # ===== TAB 2: EVENTOS ECONOMICOS =====
