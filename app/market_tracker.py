@@ -347,22 +347,26 @@ with tab2:
         display_df = events_df.copy()
         display_df['date'] = pd.to_datetime(display_df['date']).dt.strftime('%d/%m/%Y')
 
+        # Converter todas colunas para string para edição
+        for col in display_df.columns:
+            display_df[col] = display_df[col].astype(str)
+
         # Editor de dados
         edited_df = st.data_editor(
             display_df,
-            use_container_width=True,
+            width='stretch',
             height=400,
             num_rows="dynamic",
             column_config={
-                "date": st.column_config.TextColumn("Data", help="dd/mm/aaaa", width="small"),
-                "time": st.column_config.TextColumn("Hora", width="small"),
-                "category": st.column_config.SelectboxColumn("Categoria", options=["Inflação", "Focus", "Fiscal", "Emprego", "Político", "Monetário", "PIB", "Produção", "Outro"], width="small"),
-                "indicator": st.column_config.TextColumn("Indicador", width="medium"),
-                "forecast": st.column_config.TextColumn("Expectativa", width="small"),
-                "previous": st.column_config.TextColumn("Anterior", width="small"),
-                "actual": st.column_config.TextColumn("Real", width="small"),
-                "impact": st.column_config.SelectboxColumn("Impacto", options=["Baixo", "Médio", "Alto"], width="small"),
-                "notes": st.column_config.TextColumn("Observações", width="large")
+                "date": "Data",
+                "time": "Hora",
+                "category": st.column_config.SelectboxColumn("Categoria", options=["Inflação", "Focus", "Fiscal", "Emprego", "Político", "Monetário", "PIB", "Produção", "Outro"]),
+                "indicator": "Indicador",
+                "forecast": "Expectativa",
+                "previous": "Anterior",
+                "actual": "Real",
+                "impact": st.column_config.SelectboxColumn("Impacto", options=["Baixo", "Médio", "Alto"]),
+                "notes": "Observações"
             },
             hide_index=True
         )

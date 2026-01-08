@@ -17,7 +17,10 @@
       "Bash(taskkill:*)",
       "Bash(pkill:*)",
       "Bash(xargs kill -9)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(lsof:*)",
+      "Bash(netstat:*)",
+      "Bash(timeout 10 streamlit run:*)"
     ]
   }
 }
