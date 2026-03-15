@@ -1,0 +1,7 @@
+Quantas vezes seguiu o preço da CME?
+Quantas vezes seguiu o DX?
+Quantas vezes seguiu a correlação negativa do S&P Futuro?
+Quantas vezes seguiu as iShares?
+Quantas vezes seguiu os DI's na abertura? (quero saber se as DI's abriram negativas ou positivas, por exemplo, abriram positivas mas foram caindo podem enganar a visão).
+Quantas vezes desprendeu do preço da VWAP e voltou, em quantos pontos?
+

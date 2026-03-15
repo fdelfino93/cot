@@ -235,6 +235,149 @@ Insights automáticos
 
 ## 3. ESTRUTURA DE DADOS
 
+### Planilha Excel: `Trade 2026.xlsx`
+
+**✅ ATUALIZADO 12/02/2026:** Planilha principal de acompanhamento diário, preenchida manualmente.
+
+**Estrutura das colunas (37 colunas):**
+
+| Coluna | Tipo | Descrição |
+|--------|------|-----------|
+| **Identificação** | | |
+| `DIA` | Date | Data do registro |
+| `SEM` | Text | Dia da semana (seg, ter, qua, qui, sex) |
+| `HR` | Time | Hora do registro |
+| **VIX (3 colunas)** | | |
+| `VIX Ant` | Float | VIX fechamento do dia anterior, em **pontos** (ex: 14.51) |
+| `VIX Now` | Float | VIX valor atual no momento do registro, em **pontos** (ex: 15.15) |
+| `VIX` | Float | VIX variação **percentual** atual vs fechamento anterior (ex: 0.0441 = +4.41%) |
+| **Índices e Moedas (variação %)** | | |
+| `DXY` | Float | Dollar Index - Variação % vs fechamento anterior |
+| `JPY` | Float | Iene Japonês - Variação % vs fechamento anterior |
+| `S&P500 F` | Float | S&P 500 Futures - Variação % vs fechamento anterior |
+| **Commodities (variação %)** | | |
+| `M. Ferro` | Float | Minério de Ferro - Variação % vs fechamento anterior |
+| `Ouro` | Float | Ouro - Variação % vs fechamento anterior |
+| `Brent` | Float | Petróleo Brent - Variação % vs fechamento anterior |
+| `WTI` | Float | Petróleo WTI - Variação % vs fechamento anterior |
+| **Treasuries (variação %)** | | |
+| `2Y` | Float | Treasury 2 anos - Variação % vs fechamento anterior |
+| `10Y` | Float | Treasury 10 anos - Variação % vs fechamento anterior |
+| **Risco Brasil** | | |
+| `CDS Br5` | Float | CDS Brasil 5Y - Variação % vs fechamento anterior |
+| **Moedas Emergentes (variação %)** | | |
+| `AUD` | Float | Dólar Australiano - Variação % vs fechamento anterior |
+| `CLP` | Float | Peso Chileno - Variação % vs fechamento anterior |
+| `INR` | Float | Rupia Indiana - Variação % vs fechamento anterior |
+| `MXN` | Float | Peso Mexicano - Variação % vs fechamento anterior |
+| `TRY` | Float | Lira Turca - Variação % vs fechamento anterior |
+| `ZAR` | Float | Rand Sul-Africano - Variação % vs fechamento anterior |
+| **ETFs (variação %)** | | |
+| `EWZ` | Float | iShares MSCI Brazil ETF - Variação % |
+| `EWW` | Float | iShares MSCI Mexico ETF - Variação % |
+| `TUR` | Float | iShares MSCI Turkey ETF - Variação % |
+| `EMB` | Float | iShares JP Morgan EM Bond ETF - Variação % |
+| **ADRs Brasileiras (variação %)** | | |
+| `VALE` | Float | Vale ADR - Variação % |
+| `PBR-A` | Float | Petrobras ADR - Variação % |
+| `ITUB` | Float | Itaú ADR - Variação % |
+| **BRL Futures CME (OHLC em USD/BRL)** | | |
+| `BRL CME Open` | Float | BRL Futures - Abertura |
+| `BRL CME High` | Float | BRL Futures - Máxima |
+| `BRL CME Low` | Float | BRL Futures - Mínima |
+| `BRL CME Last` | Float | BRL Futures - Último/Fechamento |
+| **JGB - Japan Government Bonds (4 colunas)** | | |
+| `JGB 2Y %` | Float | JGB 2 anos - Variação **percentual** atual vs fechamento anterior |
+| `JGB 2Y` | Float | JGB 2 anos - Valor atual em **pontos** (yield) |
+| `JGB 10Y %` | Float | JGB 10 anos - Variação **percentual** atual vs fechamento anterior |
+| `JGB 10Y` | Float | JGB 10 anos - Valor atual em **pontos** (yield) |
+| **WDO - Referências do Dia Anterior** | | |
+| `Ajuste Ant` | Float | Preço de ajuste do dia anterior na B3 (ex: 5832.50). Referência para ajuste de margem |
+| `Fech Ant` | Float | Preço de fechamento do dia anterior (ex: 5828.00). Pode diferir do ajuste |
+
+#### Notas sobre colunas especiais
+
+**VIX (3 colunas):**
+- O VIX tem tratamento diferenciado porque é um indicador de volatilidade/medo
+- `VIX Ant` = fechamento do dia anterior em pontos absolutos (ex: 14.51 pts)
+- `VIX Now` = valor em pontos no momento do registro (ex: 15.15 pts)
+- `VIX` = variação percentual entre os dois (ex: 0.0441 = VIX subiu 4.41% no dia)
+- **Leitura rápida:** Se VIX > 0, volatilidade aumentou; se VIX < 0, mercado mais calmo
+
+**JGB - Japan Government Bonds (4 colunas):**
+- Bonds do governo japonês, relevantes para carry trade global (Yen carry trade)
+- Para cada prazo (2Y e 10Y), há 2 colunas:
+  - `JGB xY %` = variação percentual vs fechamento anterior (ex: 0.0120 = +1.20%)
+  - `JGB xY` = yield atual em pontos/valor absoluto (ex: 0.685)
+- **Por que importa:** Yields japoneses subindo = potencial desmonte de carry trade em Yen = impacto em emergentes
+
+**Ajuste Ant e Fech Ant (na aba Trade):**
+- `Ajuste Ant` = Preço de ajuste oficial da B3 do dia anterior. É a referência para cálculo de margem e ajuste diário
+- `Fech Ant` = Último preço negociado no dia anterior. Pode diferir do ajuste
+- **Como preencher:** Pegar na corretora (Profit, Tryd) ou no site da B3
+- **Por que importa:** Variações percentuais em relação ao ajuste (±0.5%, ±1.0%) tendem a ser pontos de desmonte de posição
+- **Níveis de S/R derivados (calcular no Excel):**
+  - `Ajuste Ant × 1.005` = nível de +0.5% (resistência/desmonte)
+  - `Ajuste Ant × 0.995` = nível de -0.5% (suporte/desmonte)
+  - `Ajuste Ant × 1.01` = nível de +1.0% (resistência forte)
+  - `Ajuste Ant × 0.99` = nível de -1.0% (suporte forte)
+  - **Hipótese:** Esses níveis atuam como pontos de desmonte de posição (preço tende a voltar)
+
+---
+
+### Aba "Abertura WDO" (Trade 2026.xlsx - aba separada)
+
+**Estudo de Volatilidade da Abertura do Mini Dólar (WDO/B3)**
+
+Aba dedicada ao estudo intraday do comportamento do WDO na abertura do pregão.
+
+| Coluna | Tipo | Descrição |
+|--------|------|-----------|
+| `DIA` | Date | Data do pregão |
+| `SEM` | Text | Dia da semana |
+| `Ajuste Ant` | Float | Preço de ajuste do dia anterior (referência B3) |
+| `Fech Ant` | Float | Preço de fechamento do dia anterior |
+| `Abertura` | Float | Primeiro preço do WDO no dia (9h00) |
+| `Gap` | Float | Gap em pontos: Abertura - Ajuste Ant |
+| `Max Pullback` | Float | Máximo pullback em pontos contra a direção final, antes de confirmar direcional |
+| `Direção` | Text | Direção confirmada dos 10 pts: **A** (Alta) ou **B** (Baixa) |
+| `HR Direcional` | Time | Horário em que o direcional de 10 pts foi confirmado |
+| `Max Dia` | Float | Máxima do dia em pontos |
+| `Min Dia` | Float | Mínima do dia em pontos |
+| `Notícia 9h` | Text | Notícia relevante às 9h00 (ex: "IPCA", "Payroll", ou vazio) |
+| `Obs` | Text | Observações do dia |
+
+#### O que queremos responder com esse estudo
+
+**1. Pullback antes do direcional:**
+- Quantos pontos o WDO costuma "voltar" antes de seguir a direção?
+- Ex: Abriu 5200, voltou até 5196, depois foi até 5210 → Pullback = 4 pts
+- Após 30+ dias: calcular média, mediana, P25, P50, P75, P90
+- Resultado prático: define o **stop ideal** na abertura
+
+**2. Critério de 10 pts como direcional:**
+- Quando o WDO anda 10 pts da abertura em uma direção, ele costuma continuar?
+- Medir taxa de acerto: em X% dos dias, a direção dos 10 pts foi a direção do dia
+- Testar também 8 e 12 pts para comparar
+
+**3. Impacto de notícias às 9h00:**
+- Separar dias: com notícia 9h vs sem notícia
+- Comparar: pullback médio, tempo para direcional, range do dia
+- Hipótese: dias com notícia têm pullback maior mas direcional mais rápido
+
+**4. Níveis de 0.5% e 1.0% como S/R:**
+- O preço costuma respeitar ±0.5% e ±1.0% do ajuste anterior?
+- Medir frequência de rejeição (tocou e voltou) nesses níveis
+
+#### Análises futuras (após 30+ dias de dados)
+- Distribuição estatística do pullback (histograma)
+- Taxa de acerto do direcional de 10 pts vs direção final do dia
+- Comparação dias com notícia 9h vs sem notícia
+- Frequência de rejeição nos níveis de ±0.5% e ±1.0% do ajuste
+- Correlação entre VIX/DXY (da aba Trade) e tamanho do pullback
+
+---
+
 ### Arquivo CSV: `data/market_tracking.csv`
 
 **✅ ATUALIZADO 07/01/2026:** Agora inclui campos de variação % para TODOS os ativos principais
@@ -580,6 +723,15 @@ date,open,high,low,close,volume
 - **Integração COT:** Merge futuro entre COT (semanal) e tracking diário
 
 ### Changelog
+
+**12/02/2026:**
+- ✅ Documentada estrutura completa da planilha `Trade 2026.xlsx` (37 → 39 colunas na aba Trade)
+- ✅ Novas colunas VIX: `VIX Ant` (pontos dia anterior), `VIX Now` (pontos atual), `VIX` (variação %)
+- ✅ Novas colunas JGB: `JGB 2Y %` e `JGB 10Y %` (variação %), `JGB 2Y` e `JGB 10Y` (pontos)
+- ✅ Adicionadas colunas: `JPY` (Iene), `Ouro` (Gold) na planilha
+- ✅ Aba Trade: `Ajuste Ant` e `Fech Ant` do WDO como colunas de referência
+- ✅ **Nova aba "Abertura WDO":** Estudo separado de volatilidade da abertura (13 colunas)
+- ✅ Documentados níveis de S/R derivados do Ajuste Anterior (±0.5%, ±1.0%)
 
 **07/01/2026:**
 - ✅ Adicionados campos `_chg` para todos ativos principais

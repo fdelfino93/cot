@@ -13,26 +13,26 @@ import os
 from datetime import datetime
 
 
-# DADOS ATUAIS (extraidos automaticamente em 2026-01-05 09:18, relatorio de 2025-12-23)
+# DADOS ATUAIS (extraidos automaticamente em 2026-01-12 08:53, relatorio de 2026-01-06)
 CURRENT_DATA = {
-    "report_date": "2025-12-23",
+    "report_date": "2026-01-06",
     "BRL": {
-        "open_interest": 113899,
-        "asset_manager": {"long": 42195, "short": 853, "net": 41342},
-        "leveraged_funds": {"long": 23770, "short": 14566, "net": 9204},
-        "dealer": {"long": 10212, "short": 65390, "net": -55178}
+        "open_interest": 73669,
+        "asset_manager": {"long": 41310, "short": 3943, "net": 37367},
+        "leveraged_funds": {"long": 21860, "short": 20440, "net": 1420},
+        "dealer": {"long": 1171, "short": 44772, "net": -43601}
     },
     "DXY": {
-        "open_interest": 28181,
-        "asset_manager": {"long": 3320, "short": 2152, "net": 1168},
-        "leveraged_funds": {"long": 13485, "short": 14811, "net": -1326},
-        "dealer": {"long": 3663, "short": 767, "net": 2896}
+        "open_interest": 30078,
+        "asset_manager": {"long": 2799, "short": 4117, "net": -1318},
+        "leveraged_funds": {"long": 15398, "short": 14632, "net": 766},
+        "dealer": {"long": 3450, "short": 767, "net": 2683}
     },
     "T10Y": {
-        "open_interest": 5569530,
-        "asset_manager": {"long": 3046897, "short": 960365, "net": 2086532},
-        "leveraged_funds": {"long": 527617, "short": 2825944, "net": -2298327},
-        "dealer": {"long": 398925, "short": 519474, "net": -120549}
+        "open_interest": 5536100,
+        "asset_manager": {"long": 3129213, "short": 909530, "net": 2219683},
+        "leveraged_funds": {"long": 431405, "short": 2767144, "net": -2335739},
+        "dealer": {"long": 418498, "short": 544325, "net": -125827}
     }
 }
 
